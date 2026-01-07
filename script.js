@@ -1,59 +1,37 @@
 async function generateSkillMap() {
-  const goalInput = document.getElementById("goal");
-  const resumeInput = document.getElementById("resume");
-  const resultDiv = document.getElementById("result");
+  const goal = document.getElementById("goal").value;
+  const resume = document.getElementById("resume").value;
+  const output = document.getElementById("output");
 
-  const goal = goalInput.value.trim();
-  const resume = resumeInput.value.trim();
-
-  if (!goal || !resume) {
-    resultDiv.classList.remove("hidden");
-    resultDiv.innerHTML = "<p>Please enter both a goal and resume.</p>";
-    return;
-  }
-
-  // Loading state
-  resultDiv.classList.remove("hidden");
-  resultDiv.innerHTML = "<p>Analyzing your skills…</p>";
+  output.innerHTML = "<p>Analyzing your skills…</p>";
 
   try {
-    const response = await fetch(
-      "https://skillmapai-epbzdggxdnfkgthn.centralindia-01.azurewebsites.net/skillmap",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          goal: goal,
-          resume: resume
-        })
-      }
-    );
+    const res = await fetch("/skillmap", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goal, resume })
+    });
 
-    if (!response.ok) {
-      throw new Error("Backend error");
-    }
+    const data = await res.json();
 
-    const data = await response.json();
+    output.innerHTML = `
+      <div class="card">
+        <h2>Current Skills</h2>
+        <ul>${data.current_skills.map(s => `<li>${s}</li>`).join("")}</ul>
+      </div>
 
-    // Render output cleanly
-    resultDiv.innerHTML = `
-      <h2>Skill Map for ${data.goal}</h2>
+      <div class="card">
+        <h2>Skills to Learn</h2>
+        <ul>${data.missing_skills.map(s => `<li>${s}</li>`).join("")}</ul>
+      </div>
 
-      <h3>Missing Skills</h3>
-      <ul>
-        ${data.missing_skills.map(skill => `<li>${skill}</li>`).join("")}
-      </ul>
-
-      <h3>Learning Plan</h3>
-      <ul>
-        ${data.learning_plan.map(step => `<li>${step}</li>`).join("")}
-      </ul>
+      <div class="card">
+        <h2>30-Day Learning Plan</h2>
+        <ol>${data.plan.map(p => `<li>${p}</li>`).join("")}</ol>
+      </div>
     `;
-  } catch (error) {
-    resultDiv.innerHTML = `
-      <p>Something went wrong. Please try again.</p>
-    `;
+  } catch (err) {
+    output.innerHTML = "<p>Something went wrong. Try again.</p>";
+    console.error(err);
   }
 }
