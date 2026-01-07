@@ -1,38 +1,51 @@
+const API_URL = "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap";
+
+const btn = document.getElementById("generateBtn");
+const skillsInput = document.getElementById("skillsInput");
+const goalInput = document.getElementById("goalInput");
+const resultDiv = document.getElementById("result");
+
+btn.addEventListener("click", generateSkillMap);
+
 async function generateSkillMap() {
-  const skills = document.getElementById("skillsInput").value.trim();
-  const goal = document.getElementById("goalInput").value.trim();
-  const resultBox = document.getElementById("result");
+  const skills = skillsInput.value.trim();
+  const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    resultBox.innerText = "Please fill in both fields.";
+    alert("Please enter your skills and target role.");
     return;
   }
 
-  resultBox.innerText = "Generating skill map...";
+  resultDiv.classList.remove("hidden");
+  resultDiv.innerHTML = "<h2>Analyzing...</h2><p>Please wait.</p>";
 
   try {
-    const response = await fetch(
-      "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ skills, goal })
-      }
-    );
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        resume: skills,
+        goal: goal
+      })
+    });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new Error("Server error");
     }
 
     const data = await response.json();
 
-    resultBox.innerHTML =
-      "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-
+    resultDiv.innerHTML = `
+      <h2>Your Skill Map</h2>
+      <pre>${JSON.stringify(data, null, 2)}</pre>
+    `;
   } catch (err) {
+    resultDiv.innerHTML = `
+      <h2>Error</h2>
+      <p>Something went wrong. Please try again.</p>
+    `;
     console.error(err);
-    resultBox.innerText = "Backend error. Check console.";
   }
 }
