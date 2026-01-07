@@ -1,15 +1,11 @@
-// Make function GLOBAL so button onclick works
+// ===== FORCE FUNCTION TO BE GLOBAL =====
 window.generateSkillMap = function () {
-  // 1️⃣ Get inputs SAFELY (based on placeholders you already have)
-  const skillsInput = document.querySelector(
-    'textarea[placeholder*="skills"]'
-  );
-  const goalInput = document.querySelector(
-    'input[placeholder*="Target"]'
-  );
+
+  const skillsInput = document.querySelector("textarea");
+  const goalInput = document.querySelector("input");
 
   if (!skillsInput || !goalInput) {
-    alert("Inputs not found. UI structure mismatch.");
+    alert("Inputs not found");
     return;
   }
 
@@ -17,31 +13,30 @@ window.generateSkillMap = function () {
   const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Please enter skills and target role");
+    alert("Enter skills and target role");
     return;
   }
 
-  // 2️⃣ Find OR create result container IN THE RIGHT PLACE
-  let resultBox = document.querySelector(".result");
+  // ----- RESULT CONTAINER -----
+  let result = document.querySelector(".result");
 
-  if (!resultBox) {
-    resultBox = document.createElement("div");
-    resultBox.className = "result";
+  if (!result) {
+    result = document.createElement("div");
+    result.className = "result";
 
-    // Insert AFTER the button (guaranteed visible)
     const button = document.querySelector("button");
-    button.parentNode.insertBefore(resultBox, button.nextSibling);
+    button.insertAdjacentElement("afterend", result);
   }
 
-  // 3️⃣ AI LOGIC (offline-safe, demo-ready)
-  const roleSkills = {
+  // ----- AI LOGIC -----
+  const roleMap = {
     "AI Engineer": [
       "Python",
       "Machine Learning",
       "Deep Learning",
-      "Maths",
-      "Model Deployment",
-      "Projects"
+      "Math",
+      "Projects",
+      "Deployment"
     ],
     "Web Developer": [
       "HTML",
@@ -49,30 +44,22 @@ window.generateSkillMap = function () {
       "JavaScript",
       "React",
       "APIs",
-      "Deployment"
+      "Hosting"
     ]
   };
 
-  const userSkills = skills
-    .toLowerCase()
-    .split(",")
-    .map(s => s.trim());
-
-  const expected = roleSkills[goal] || [
-    "Fundamentals",
-    "Projects",
-    "Industry tools"
-  ];
+  const userSkills = skills.toLowerCase().split(",").map(s => s.trim());
+  const expected = roleMap[goal] || roleMap["AI Engineer"];
 
   const missing = expected.filter(
     s => !userSkills.some(u => u.includes(s.toLowerCase()))
   );
 
-  // 4️⃣ Render (NO UI STYLING CHANGED)
-  resultBox.innerHTML = `
-    <h2>SkillMap AI Analysis</h2>
+  // ----- RENDER -----
+  result.innerHTML = `
+    <h2>SkillMap AI Result</h2>
 
-    <p><strong>Target Role:</strong> ${goal}</p>
+    <p><strong>Target:</strong> ${goal}</p>
 
     <h3>Missing Skills</h3>
     <ul>
@@ -83,11 +70,11 @@ window.generateSkillMap = function () {
       }
     </ul>
 
-    <h3>Roadmap</h3>
+    <h3>Learning Roadmap</h3>
     <ol>
-      <li>Phase 1: Learn fundamentals</li>
-      <li>Phase 2: Build real projects</li>
-      <li>Phase 3: Deploy & optimize</li>
+      <li>Learn fundamentals</li>
+      <li>Build real projects</li>
+      <li>Deploy & apply</li>
     </ol>
   `;
 };
