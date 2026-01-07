@@ -1,34 +1,14 @@
-// ===============================
-// SkillMap AI - FINAL SCRIPT
-// ===============================
+console.log("SkillMap JS LOADED");
 
-console.log("SkillMap JS loaded");
-
-// Ensure global access (important)
-window.generateSkillMap = generateSkillMap;
-
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("generateBtn");
-
-  if (!btn) {
-    console.error("Generate button not found");
-    return;
-  }
-
-  btn.addEventListener("click", generateSkillMap);
-});
-
-// ===============================
-// MAIN FUNCTION
-// ===============================
-function generateSkillMap() {
+// FORCE GLOBAL FUNCTION (THIS IS THE KEY FIX)
+window.generateSkillMap = function () {
   console.log("Generate button clicked");
 
   const skillsInput = document.querySelector("textarea");
   const goalInput = document.querySelector("input");
 
   if (!skillsInput || !goalInput) {
-    alert("Input fields missing");
+    alert("Inputs not found");
     return;
   }
 
@@ -36,11 +16,11 @@ function generateSkillMap() {
   const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Please enter skills and target role");
+    alert("Please fill both fields");
     return;
   }
 
-  // -------- Mock AI Logic --------
+  // ===== MOCK AI LOGIC =====
   const requiredSkills = [
     "Python",
     "Data Structures",
@@ -52,69 +32,36 @@ function generateSkillMap() {
     "System Design"
   ];
 
-  const missingSkills = requiredSkills.filter(
+  const missing = requiredSkills.filter(
     s => !skills.toLowerCase().includes(s.toLowerCase())
   );
 
-  const roadmap = missingSkills.map(
-    (s, i) => `${i + 1}. Learn ${s} (2 weeks)`
-  );
+  let output = "";
+  output += "TARGET ROLE:\n" + goal + "\n\n";
+  output += "CURRENT SKILLS:\n" + skills + "\n\n";
+  output += "MISSING SKILLS:\n";
+  output += missing.length ? missing.join(", ") : "None 🎯";
+  output += "\n\nROADMAP:\n";
 
-  const resultText = `
-TARGET ROLE
-${goal}
-
-CURRENT SKILLS
-${skills}
-
-MISSING SKILLS
-${missingSkills.length ? missingSkills.join(", ") : "None 🎯"}
-
-LEARNING ROADMAP
-${roadmap.length ? roadmap.join("\n") : "You are job-ready 🚀"}
-`;
-
-  // -------- FORCE VISIBLE RESULT --------
-  renderResult(resultText);
-}
-
-// ===============================
-// RENDER RESULT (IMPOSSIBLE TO HIDE)
-// ===============================
-function renderResult(text) {
-  let box = document.getElementById("skillmap-result");
-
-  if (!box) {
-    box = document.createElement("pre");
-    box.id = "skillmap-result";
-
-    box.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #ffffff;
-      color: #000000;
-      padding: 32px;
-      width: 85%;
-      max-width: 900px;
-      max-height: 80vh;
-      overflow-y: auto;
-      z-index: 2147483647;
-      border-radius: 16px;
-      font-size: 15px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      box-shadow: 0 0 100px rgba(0,0,0,0.9);
-    `;
-
-    document.documentElement.appendChild(box);
+  if (missing.length) {
+    missing.forEach((s, i) => {
+      output += `${i + 1}. Learn ${s} (2 weeks)\n`;
+    });
+  } else {
+    output += "You are job ready 🚀";
   }
 
-  box.textContent = text;
+  // ===== GUARANTEED DISPLAY =====
+  alert(output);
+};
 
-  console.log("Result rendered");
-
-  // Absolute fallback (cannot fail)
-  alert(text);
-}
+// ALSO BIND BUTTON SAFELY
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("generateBtn");
+  if (btn) {
+    btn.onclick = window.generateSkillMap;
+    console.log("Button bound successfully");
+  } else {
+    console.error("generateBtn not found");
+  }
+});
