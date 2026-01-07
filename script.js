@@ -1,12 +1,29 @@
 const API_URL =
   "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap";
 
-const btn = document.getElementById("generateBtn");
-const skillsInput = document.getElementById("skillsInput");
-const goalInput = document.getElementById("goalInput");
-const resultDiv = document.getElementById("result");
+// Grab elements WITHOUT changing HTML
+const skillsInput = document.querySelector(
+  'textarea[placeholder*="skills"]'
+);
 
-btn.addEventListener("click", generateSkillMap);
+const goalInput = document.querySelector(
+  'input[placeholder*="Target role"]'
+);
+
+const button = Array.from(document.querySelectorAll("button"))
+  .find(btn => btn.textContent.includes("GENERATE"));
+
+const resultDiv = document.querySelector("#result") || createResultBox();
+
+function createResultBox() {
+  const div = document.createElement("div");
+  div.id = "result";
+  div.style.marginTop = "40px";
+  document.body.appendChild(div);
+  return div;
+}
+
+button.addEventListener("click", generateSkillMap);
 
 async function generateSkillMap() {
   const skills = skillsInput.value.trim();
@@ -17,8 +34,7 @@ async function generateSkillMap() {
     return;
   }
 
-  resultDiv.classList.remove("hidden");
-  resultDiv.innerHTML = "<h2>Analyzing...</h2><p>Please wait.</p>";
+  resultDiv.innerHTML = "<h2>Analyzing your profile…</h2>";
 
   try {
     const response = await fetch(API_URL, {
@@ -39,14 +55,12 @@ async function generateSkillMap() {
     const data = await response.json();
 
     resultDiv.innerHTML = `
-      <h2>Your Personalized Skill Map</h2>
+      <h2>Your Skill Map</h2>
       <pre>${JSON.stringify(data, null, 2)}</pre>
     `;
   } catch (err) {
     console.error(err);
-    resultDiv.innerHTML = `
-      <h2>Error</h2>
-      <p>Backend unreachable. Check API URL.</p>
-    `;
+    resultDiv.innerHTML =
+      "<h2>Error</h2><p>Backend request failed.</p>";
   }
 }
