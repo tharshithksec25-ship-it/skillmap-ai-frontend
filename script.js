@@ -1,41 +1,43 @@
 async function generateSkillMap() {
-  const goal = document.getElementById("goal").value;
-  const resume = document.getElementById("resume").value;
-  const output = document.getElementById("output");
+  const skills = document.querySelector("textarea").value.trim();
+  const goal = document.querySelector("input").value.trim();
+  const resultBox = document.getElementById("result");
 
-  output.innerHTML = "<p>Analyzing your skills…</p>";
+  // Safety check (prevents crash)
+  if (!resultBox) {
+    alert("Result container not found in HTML");
+    return;
+  }
+
+  if (!skills || !goal) {
+    resultBox.innerHTML = "Please enter your skills and goal.";
+    return;
+  }
+
+  resultBox.innerHTML = "Generating your skill map...";
 
   try {
-    const res = await fetch("/skillmap", {
+    const response = await fetch("/skillmap", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ goal, resume })
+      body: JSON.stringify({
+        resume: skills,
+        goal: goal
+      })
     });
 
-    const data = await res.json();
+    if (!response.ok) {
+      throw new Error("Server error");
+    }
 
-    const current = data.current_skills || [];
-    const missing = data.missing_skills || [];
-    const plan = data.plan || [];
+    const data = await response.json();
 
-    output.innerHTML = `
-      <div class="card">
-        <h2>Current Skills</h2>
-        <ul>${current.map(s => `<li>${s}</li>`).join("")}</ul>
-      </div>
-
-      <div class="card">
-        <h2>Skills to Learn</h2>
-        <ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>
-      </div>
-
-      <div class="card">
-        <h2>30-Day Learning Plan</h2>
-        <ol>${plan.map(p => `<li>${p}</li>`).join("")}</ol>
-      </div>
+    resultBox.innerHTML = `
+      <h3>Your Personalized Skill Map</h3>
+      <pre>${JSON.stringify(data, null, 2)}</pre>
     `;
   } catch (err) {
+    resultBox.innerHTML = "Something went wrong. Please try again.";
     console.error(err);
-    output.innerHTML = "<p>Something went wrong. Please try again.</p>";
   }
 }
