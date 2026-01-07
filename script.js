@@ -1,23 +1,37 @@
-// ===== FORCE FUNCTION TO BE GLOBAL =====
-window.generateSkillMap = function () {
+// ================================
+// HARD BIND BUTTON ON PAGE LOAD
+// ================================
+document.addEventListener("DOMContentLoaded", () => {
 
+  const button = document.querySelector("button");
   const skillsInput = document.querySelector("textarea");
   const goalInput = document.querySelector("input");
 
-  if (!skillsInput || !goalInput) {
-    alert("Inputs not found");
+  if (!button || !skillsInput || !goalInput) {
+    console.error("Required elements not found");
     return;
   }
+
+  button.addEventListener("click", generateSkillMap);
+});
+
+// ================================
+// CORE FUNCTION (AI LOGIC)
+// ================================
+function generateSkillMap() {
+
+  const skillsInput = document.querySelector("textarea");
+  const goalInput = document.querySelector("input");
 
   const skills = skillsInput.value.trim();
   const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Enter skills and target role");
+    alert("Please enter skills and target role");
     return;
   }
 
-  // ----- RESULT CONTAINER -----
+  // ---------- RESULT CONTAINER ----------
   let result = document.querySelector(".result");
 
   if (!result) {
@@ -28,13 +42,14 @@ window.generateSkillMap = function () {
     button.insertAdjacentElement("afterend", result);
   }
 
-  // ----- AI LOGIC -----
-  const roleMap = {
+  // ---------- AI SKILL MAP ----------
+  const roleSkills = {
     "AI Engineer": [
       "Python",
       "Machine Learning",
       "Deep Learning",
-      "Math",
+      "Linear Algebra",
+      "Statistics",
       "Projects",
       "Deployment"
     ],
@@ -45,36 +60,43 @@ window.generateSkillMap = function () {
       "React",
       "APIs",
       "Hosting"
+    ],
+    "Product Manager": [
+      "Roadmapping",
+      "User Research",
+      "Analytics",
+      "Communication",
+      "Execution"
     ]
   };
 
   const userSkills = skills.toLowerCase().split(",").map(s => s.trim());
-  const expected = roleMap[goal] || roleMap["AI Engineer"];
+  const expected = roleSkills[goal] || roleSkills["AI Engineer"];
 
   const missing = expected.filter(
-    s => !userSkills.some(u => u.includes(s.toLowerCase()))
+    skill => !userSkills.some(u => u.includes(skill.toLowerCase()))
   );
 
-  // ----- RENDER -----
+  // ---------- RENDER ----------
   result.innerHTML = `
-    <h2>SkillMap AI Result</h2>
+    <h2>SkillMap AI</h2>
 
-    <p><strong>Target:</strong> ${goal}</p>
+    <p><strong>Target Role:</strong> ${goal}</p>
 
     <h3>Missing Skills</h3>
     <ul>
       ${
         missing.length
           ? missing.map(m => `<li>${m}</li>`).join("")
-          : "<li>No major gaps 🎯</li>"
+          : "<li>No major gaps found 🎯</li>"
       }
     </ul>
 
     <h3>Learning Roadmap</h3>
     <ol>
       <li>Learn fundamentals</li>
-      <li>Build real projects</li>
-      <li>Deploy & apply</li>
+      <li>Build real-world projects</li>
+      <li>Apply & iterate</li>
     </ol>
   `;
-};
+}
