@@ -1,72 +1,70 @@
-// Grab inputs
-const skillsInput = document.querySelector("textarea");
-const goalInput = document.querySelector("input");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("SkillMap JS loaded");
 
-// Make function GLOBAL so button can see it
-window.generateSkillMap = function () {
-  const skills = skillsInput.value.trim();
-  const goal = goalInput.value.trim();
+  const skillsInput = document.querySelector("textarea");
+  const goalInput = document.querySelector("input");
+  const button = document.querySelector("button");
 
-  // Validation
-  if (!skills || !goal) {
-    alert("Please enter your current skills and target role.");
+  if (!skillsInput || !goalInput || !button) {
+    console.error("Required elements not found");
     return;
   }
 
-  // Find or create result container
-  let result = document.querySelector(".result");
-  if (!result) {
-    result = document.createElement("div");
-    result.className = "result";
-    document.querySelector("button").after(result);
-  }
+  button.addEventListener("click", () => {
+    console.log("Button clicked");
 
-  // HARD-SET styles so text is visible (NO UI CHANGE)
-  result.style.color = "#fff";
-  result.style.marginTop = "40px";
+    const skills = skillsInput.value.trim();
+    const goal = goalInput.value.trim();
 
-  // Simple AI logic (hackathon-acceptable)
-  const skillMap = {
-    "AI Engineer": [
-      "Python",
-      "Data Structures",
-      "Linear Algebra",
-      "Machine Learning",
-      "Deep Learning",
-      "PyTorch / TensorFlow",
-      "MLOps"
-    ],
-    "Product Manager": [
-      "Market Research",
-      "User Stories",
-      "Roadmapping",
-      "Analytics",
-      "Stakeholder Management"
-    ]
-  };
+    if (!skills || !goal) {
+      alert("Enter skills and target role");
+      return;
+    }
 
-  const requiredSkills = skillMap[goal] || ["Domain Knowledge", "Problem Solving"];
-  const userSkills = skills.toLowerCase();
-  const missing = requiredSkills.filter(
-    s => !userSkills.includes(s.toLowerCase())
-  );
+    let result = document.querySelector(".result");
 
-  // Render output
-  result.innerHTML = `
-    <h2>Your Skill Map</h2>
-    <p><strong>Target Role:</strong> ${goal}</p>
+    if (!result) {
+      result = document.createElement("div");
+      result.className = "result";
+      result.style.marginTop = "40px";
+      result.style.color = "#fff";
+      button.after(result);
+    }
 
-    <h3>Missing Skills</h3>
-    <ul>
-      ${missing.map(s => `<li>${s}</li>`).join("")}
-    </ul>
+    const roleSkills = {
+      "AI Engineer": [
+        "Python",
+        "Data Structures",
+        "Linear Algebra",
+        "Machine Learning",
+        "Deep Learning",
+        "PyTorch",
+        "MLOps"
+      ],
+      "Product Manager": [
+        "User Research",
+        "Roadmapping",
+        "Analytics",
+        "Stakeholder Management"
+      ]
+    };
 
-    <h3>Recommended Roadmap</h3>
-    <ol>
-      ${missing.map(s => `<li>Learn ${s}</li>`).join("")}
-    </ol>
-  `;
+    const required = roleSkills[goal] || [];
+    const missing = required.filter(
+      s => !skills.toLowerCase().includes(s.toLowerCase())
+    );
 
-  // UX polish
-  result.scrollIntoView({ behavior: "smooth" });
-};
+    result.innerHTML = `
+      <h2>Your Skill Map</h2>
+      <p><strong>Target Role:</strong> ${goal}</p>
+
+      <h3>Missing Skills</h3>
+      <ul>${missing.map(m => `<li>${m}</li>`).join("")}</ul>
+
+      <h3>Roadmap</h3>
+      <ol>${missing.map(m => `<li>Learn ${m}</li>`).join("")}</ol>
+    `;
+
+    result.scrollIntoView({ behavior: "smooth" });
+  });
+});
