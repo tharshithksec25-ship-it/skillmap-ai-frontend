@@ -1,6 +1,4 @@
-console.log("SkillMap JS loaded");
-
-window.generateSkillMap = function () {
+function generateSkillMap() {
   console.log("Generate button clicked");
 
   const skillsInput = document.querySelector("textarea");
@@ -13,93 +11,84 @@ window.generateSkillMap = function () {
     alert("Please enter skills and target role");
     return;
   }
-// 🔥 FORCE RESULT INTO VIEWPORT
-let result = document.getElementById("result");
 
-if (!result) {
-  result = document.createElement("section");
-  result.id = "result";
+  const requiredSkills = [
+    "Python",
+    "Data Structures",
+    "Machine Learning",
+    "Deep Learning",
+    "System Design",
+    "SQL",
+    "APIs"
+  ];
 
-  // VISIBILITY GUARANTEE
-  result.style.position = "fixed";
-  result.style.left = "50%";
-  result.style.top = "50%";
-  result.style.transform = "translate(-50%, -50%)";
-  result.style.width = "80%";
-  result.style.maxWidth = "900px";
-  result.style.maxHeight = "80vh";
-  result.style.overflowY = "auto";
-  result.style.zIndex = "99999";
-  result.style.background = "#0f0f0f";
-  result.style.color = "#ffffff";
-  result.style.padding = "40px";
-  result.style.borderRadius = "16px";
-  result.style.boxShadow = "0 0 40px rgba(0,0,0,0.7)";
-
-  document.body.appendChild(result);
-}
-
-result.innerHTML = `
-  <h2 style="margin-bottom:16px;">Skill Gap Analysis</h2>
-
-  <p><strong>Target Role:</strong> ${goal}</p>
-
-  <h3 style="margin-top:24px;">Missing Skills</h3>
-  ${
-    missing.length
-      ? `<ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>`
-      : `<p>You already match this role 🎯</p>`
-  }
-
-  <h3 style="margin-top:24px;">Learning Roadmap</h3>
-  <ol>
-    ${missing.map(s => `<li>Learn ${s}</li>`).join("")}
-  </ol>
-
-  <button onclick="document.getElementById('result').remove()"
-    style="margin-top:24px;padding:12px 24px;font-weight:600;">
-    Close
-  </button>
-`;
-
-console.log("Result forced to viewport");
-
-
-  const roleSkills = {
-    "AI Engineer": [
-      "Python",
-      "Data Structures",
-      "Linear Algebra",
-      "Probability",
-      "Machine Learning",
-      "Deep Learning",
-      "PyTorch",
-      "MLOps"
-    ]
-  };
-
-  const required = roleSkills[goal] || [];
-  const missing = required.filter(
-    s => !skills.toLowerCase().includes(s.toLowerCase())
+  const userSkills = skills.toLowerCase();
+  const missing = requiredSkills.filter(
+    s => !userSkills.includes(s.toLowerCase())
   );
 
-  result.innerHTML = `
+  // 🔥 HARD MOUNT TO <html> (BYPASSES ALL TRANSFORMS)
+  let modal = document.getElementById("skillmap-modal");
+
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "skillmap-modal";
+
+    modal.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 2147483647;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const box = document.createElement("div");
+    box.id = "skillmap-box";
+
+    box.style.cssText = `
+      background: #0f0f0f;
+      color: #ffffff;
+      width: 85%;
+      max-width: 900px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 40px;
+      border-radius: 18px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.9);
+      font-size: 16px;
+    `;
+
+    modal.appendChild(box);
+
+    // ⬅️ KEY FIX
+    document.documentElement.appendChild(modal);
+  }
+
+  document.getElementById("skillmap-box").innerHTML = `
     <h2>Skill Gap Analysis</h2>
     <p><strong>Target Role:</strong> ${goal}</p>
 
-    <h3>Missing Skills</h3>
+    <h3 style="margin-top:24px;">Missing Skills</h3>
     ${
       missing.length
         ? `<ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>`
-        : `<p>You already match the role 🎯</p>`
+        : `<p>You already meet the requirements 🎯</p>`
     }
 
-    <h3>Learning Roadmap</h3>
+    <h3 style="margin-top:24px;">Learning Roadmap</h3>
     <ol>
       ${missing.map(s => `<li>Learn ${s}</li>`).join("")}
     </ol>
+
+    <button id="closeSkillMap"
+      style="margin-top:24px;padding:12px 24px;font-weight:600;">
+      Close
+    </button>
   `;
 
-  result.scrollIntoView({ behavior: "smooth" });
-};
+  document.getElementById("closeSkillMap").onclick = () => modal.remove();
 
+  console.log("MODAL RENDERED AND VISIBLE");
+}
