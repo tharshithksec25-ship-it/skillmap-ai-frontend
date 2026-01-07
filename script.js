@@ -1,4 +1,5 @@
-const API_URL = "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap";
+const API_URL =
+  "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap";
 
 const btn = document.getElementById("generateBtn");
 const skillsInput = document.getElementById("skillsInput");
@@ -12,7 +13,7 @@ async function generateSkillMap() {
   const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Please enter your skills and target role.");
+    alert("Please enter both your skills and target role.");
     return;
   }
 
@@ -32,7 +33,7 @@ async function generateSkillMap() {
     });
 
     if (!response.ok) {
-      throw new Error("Server error");
+      throw new Error("Backend returned error");
     }
 
     const data = await response.json();
@@ -42,10 +43,10 @@ async function generateSkillMap() {
       <pre>${JSON.stringify(data, null, 2)}</pre>
     `;
   } catch (err) {
+    console.error(err);
     resultDiv.innerHTML = `
       <h2>Error</h2>
-      <p>Something went wrong. Please try again.</p>
+      <p>Backend unreachable or failed. Check API URL.</p>
     `;
-    console.error(err);
   }
 }
