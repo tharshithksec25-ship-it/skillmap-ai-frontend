@@ -13,26 +13,57 @@ window.generateSkillMap = function () {
     alert("Please enter skills and target role");
     return;
   }
+// 🔥 FORCE RESULT INTO VIEWPORT
+let result = document.getElementById("result");
 
-  let result = document.getElementById("result");
+if (!result) {
+  result = document.createElement("section");
+  result.id = "result";
 
-  if (!result) {
-    result = document.createElement("div");
-    result.id = "result";
+  // VISIBILITY GUARANTEE
+  result.style.position = "fixed";
+  result.style.left = "50%";
+  result.style.top = "50%";
+  result.style.transform = "translate(-50%, -50%)";
+  result.style.width = "80%";
+  result.style.maxWidth = "900px";
+  result.style.maxHeight = "80vh";
+  result.style.overflowY = "auto";
+  result.style.zIndex = "99999";
+  result.style.background = "#0f0f0f";
+  result.style.color = "#ffffff";
+  result.style.padding = "40px";
+  result.style.borderRadius = "16px";
+  result.style.boxShadow = "0 0 40px rgba(0,0,0,0.7)";
 
-    /* VISIBILITY FORCE — UI SAFE */
-    result.style.position = "relative";
-    result.style.zIndex = "999";
-    result.style.display = "block";
-    result.style.minHeight = "200px";
-    result.style.background = "#0f0f0f";
-    result.style.color = "#ffffff";
-    result.style.padding = "32px";
-    result.style.marginTop = "48px";
-    result.style.borderRadius = "14px";
+  document.body.appendChild(result);
+}
 
-    document.querySelector("button").parentElement.after(result);
+result.innerHTML = `
+  <h2 style="margin-bottom:16px;">Skill Gap Analysis</h2>
+
+  <p><strong>Target Role:</strong> ${goal}</p>
+
+  <h3 style="margin-top:24px;">Missing Skills</h3>
+  ${
+    missing.length
+      ? `<ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>`
+      : `<p>You already match this role 🎯</p>`
   }
+
+  <h3 style="margin-top:24px;">Learning Roadmap</h3>
+  <ol>
+    ${missing.map(s => `<li>Learn ${s}</li>`).join("")}
+  </ol>
+
+  <button onclick="document.getElementById('result').remove()"
+    style="margin-top:24px;padding:12px 24px;font-weight:600;">
+    Close
+  </button>
+`;
+
+console.log("Result forced to viewport");
+
 
   const roleSkills = {
     "AI Engineer": [
@@ -71,3 +102,4 @@ window.generateSkillMap = function () {
 
   result.scrollIntoView({ behavior: "smooth" });
 };
+
