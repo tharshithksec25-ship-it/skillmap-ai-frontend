@@ -14,24 +14,28 @@ async function generateSkillMap() {
 
     const data = await res.json();
 
+    const current = data.current_skills || [];
+    const missing = data.missing_skills || [];
+    const plan = data.plan || [];
+
     output.innerHTML = `
       <div class="card">
         <h2>Current Skills</h2>
-        <ul>${data.current_skills.map(s => `<li>${s}</li>`).join("")}</ul>
+        <ul>${current.map(s => `<li>${s}</li>`).join("")}</ul>
       </div>
 
       <div class="card">
         <h2>Skills to Learn</h2>
-        <ul>${data.missing_skills.map(s => `<li>${s}</li>`).join("")}</ul>
+        <ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>
       </div>
 
       <div class="card">
         <h2>30-Day Learning Plan</h2>
-        <ol>${data.plan.map(p => `<li>${p}</li>`).join("")}</ol>
+        <ol>${plan.map(p => `<li>${p}</li>`).join("")}</ol>
       </div>
     `;
   } catch (err) {
-    output.innerHTML = "<p>Something went wrong. Try again.</p>";
     console.error(err);
+    output.innerHTML = "<p>Something went wrong. Please try again.</p>";
   }
 }
