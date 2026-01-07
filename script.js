@@ -1,23 +1,28 @@
-async function generateSkillMap() {
-  const skillsInput = document.querySelector("textarea");
-  const goalInput = document.querySelector("input");
-  const resultBox = document.getElementById("result");
+function generateSkillMap() {
+  // SAFELY GRAB INPUTS (NO ASSUMPTIONS)
+  const textarea = document.querySelector("textarea");
+  const input = document.querySelector("input");
+  const result = document.getElementById("result");
 
-  const skills = skillsInput.value.trim();
-  const goal = goalInput.value.trim();
+  if (!textarea || !input || !result) {
+    console.error("Required elements not found in DOM");
+    return;
+  }
+
+  const skills = textarea.value.trim();
+  const goal = input.value.trim();
 
   if (!skills || !goal) {
-    resultBox.innerHTML = `
+    result.innerHTML = `
       <h3>Error</h3>
       <p>Please enter your current skills and target role.</p>
     `;
     return;
   }
 
-  // FRONTEND-ONLY ROADMAP (NO BACKEND = NO ERRORS)
-  const roadmap = getRoadmap(goal);
+  const roadmap = buildRoadmap(goal);
 
-  resultBox.innerHTML = `
+  result.innerHTML = `
     <h3>Your SkillMap for ${goal}</h3>
     <ul>
       ${roadmap.map(step => `<li>${step}</li>`).join("")}
@@ -25,47 +30,46 @@ async function generateSkillMap() {
   `;
 }
 
-// SIMPLE ROLE-BASED LOGIC (EXTREMELY SAFE)
-function getRoadmap(goal) {
-  const role = goal.toLowerCase();
+function buildRoadmap(goal) {
+  const g = goal.toLowerCase();
 
-  if (role.includes("ai")) {
+  if (g.includes("ai")) {
     return [
-      "Strengthen Python & Data Structures",
-      "Learn Linear Algebra & Probability",
-      "Master Machine Learning (Scikit-learn)",
+      "Python fundamentals & clean coding",
+      "Math for AI (Linear Algebra, Probability)",
+      "Machine Learning with scikit-learn",
       "Deep Learning with PyTorch / TensorFlow",
       "Build real-world AI projects",
-      "Deploy models using cloud services"
+      "Deploy models using cloud platforms"
     ];
   }
 
-  if (role.includes("product")) {
+  if (g.includes("product")) {
     return [
-      "Understand user research & problem discovery",
-      "Learn PRDs and roadmap planning",
-      "Analytics & metrics (North Star)",
+      "User research & problem framing",
+      "PRDs and roadmap planning",
+      "Analytics and KPIs",
       "Stakeholder communication",
-      "Agile & Scrum execution",
-      "Launch and iterate products"
+      "Agile execution",
+      "Product launches & iteration"
     ];
   }
 
-  if (role.includes("web")) {
+  if (g.includes("web")) {
     return [
-      "HTML, CSS, JavaScript fundamentals",
+      "HTML, CSS, JavaScript mastery",
       "Modern frameworks (React / Next.js)",
-      "Backend basics (APIs, Databases)",
-      "Authentication & security",
-      "Deployment & performance optimization"
+      "Backend APIs & databases",
+      "Auth & security basics",
+      "Deployment and optimization"
     ];
   }
 
   return [
-    "Clarify role-specific fundamentals",
-    "Learn core technical skills",
+    "Clarify fundamentals",
+    "Learn core tools",
     "Build hands-on projects",
-    "Get feedback and iterate",
-    "Prepare for interviews or real-world use"
+    "Get feedback",
+    "Iterate and grow"
   ];
 }
