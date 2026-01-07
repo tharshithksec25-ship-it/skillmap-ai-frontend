@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SkillMap AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="headline">
+      WHAT DO YOU WANT<br>
+      TO BECOME?
+    </h1>
+
+    <p class="subtext">
+      SkillMap AI analyzes your skills and builds a personalized learning roadmap.
+    </p>
+
+    <textarea
+      id="resume"
+      placeholder="Paste your resume here..."
+    ></textarea>
+
+    <input
+      id="goal"
+      type="text"
+      placeholder="Your dream role (e.g. AI Engineer, Product Manager)"
+    />
+
+    <button onclick="generateSkillMap()">GENERATE SKILL MAP</button>
+
+    <div id="result" class="result hidden"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
