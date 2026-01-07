@@ -4,31 +4,35 @@ async function generateSkillMap() {
   const resultBox = document.getElementById("result");
 
   if (!skills || !goal) {
-    resultBox.innerHTML = "<p>Please fill in both fields.</p>";
+    resultBox.innerText = "Please fill in both fields.";
     return;
   }
 
-  resultBox.innerHTML = "<p>Generating your skill map...</p>";
+  resultBox.innerText = "Generating skill map...";
 
   try {
-    // 👇 USE GET (FIXES 405)
-    const url = `/skillmap?skills=${encodeURIComponent(skills)}&goal=${encodeURIComponent(goal)}`;
-
-    const response = await fetch(url);
+    const response = await fetch(
+      "https://skillmapai-epbzdgqxdnfkgthn.centralindia-01.azurewebsites.net/skillmap",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ skills, goal })
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Server error");
+      throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
 
-    // ultra-simple render
-    resultBox.innerHTML = `
-      <h3>Your Skill Map</h3>
-      <pre>${JSON.stringify(data, null, 2)}</pre>
-    `;
+    resultBox.innerHTML =
+      "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+
   } catch (err) {
     console.error(err);
-    resultBox.innerHTML = "<p>Something went wrong. Try again.</p>";
+    resultBox.innerText = "Backend error. Check console.";
   }
 }
