@@ -73,3 +73,14 @@ function buildRoadmap(goal) {
     "Iterate and grow"
   ];
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.querySelector("button");
+  if (!button) {
+    console.error("Generate button not found");
+    return;
+  }
+
+  button.addEventListener("click", generateSkillMap);
+});
+
+
