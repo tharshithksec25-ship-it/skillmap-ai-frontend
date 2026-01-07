@@ -5,39 +5,39 @@
   <title>SkillMap AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Your existing styles -->
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+
   <main class="hero">
-    <h1>WHAT DO YOU WANT TO BECOME?</h1>
-    <p>
-      SkillMap AI analyzes your skills and builds a personalized learning roadmap.
+    <h1>WHAT DO YOU WANT<br>TO BECOME?</h1>
+    <p class="subtitle">
+      SkillMap AI analyzes your current skills and builds a personalized learning roadmap.
     </p>
 
-    <!-- Resume / skills -->
-    <textarea
-      id="skillsInput"
-      placeholder="Describe your current skills or paste your resume"
-    ></textarea>
+    <div class="form">
+      <textarea
+        id="skillsInput"
+        placeholder="Describe your current skills or paste your resume"
+      ></textarea>
 
-    <!-- Goal -->
-    <input
-      id="goalInput"
-      type="text"
-      placeholder="Target role (e.g. AI Engineer, Product Manager)"
-    />
+      <input
+        id="goalInput"
+        type="text"
+        placeholder="Target role (e.g. AI Engineer, Product Manager)"
+      />
 
-    <!-- Button -->
-    <button onclick="generateSkillMap()">
-      GENERATE SKILL MAP
-    </button>
+      <button id="generateBtn">GENERATE SKILL MAP</button>
+    </div>
 
-    <!-- 🔥 REQUIRED BY script.js (THIS WAS MISSING) -->
-    <section id="result" class="result"></section>
+    <section id="result" class="result hidden"></section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
