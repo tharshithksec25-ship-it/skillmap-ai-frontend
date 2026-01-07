@@ -5,19 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalInput = document.querySelector("input");
   const button = document.getElementById("generateBtn");
 
-  if (!skillsInput || !goalInput || !button) {
-    console.error("Missing required DOM elements");
-    return;
-  }
-
   button.addEventListener("click", () => {
-    console.log("Generate button clicked");
+    console.log("Button clicked");
 
     const skills = skillsInput.value.trim();
     const goal = goalInput.value.trim();
 
     if (!skills || !goal) {
-      alert("Please enter your skills and target role");
+      alert("Please enter skills and target role");
       return;
     }
 
@@ -26,9 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!result) {
       result = document.createElement("div");
       result.id = "result";
-      result.style.marginTop = "40px";
+
+      /* 🔒 VISIBILITY FORCE — THIS IS THE FIX */
+      result.style.position = "relative";
+      result.style.zIndex = "999";
+      result.style.display = "block";
+      result.style.minHeight = "200px";
+      result.style.background = "#0f0f0f";
       result.style.color = "#ffffff";
-      button.parentNode.appendChild(result);
+      result.style.padding = "32px";
+      result.style.marginTop = "48px";
+      result.style.borderRadius = "14px";
+      result.style.boxShadow = "0 0 0 1px rgba(255,255,255,0.08)";
+
+      /* append AFTER the button section */
+      button.closest("div").after(result);
     }
 
     const roleSkills = {
@@ -41,38 +48,32 @@ document.addEventListener("DOMContentLoaded", () => {
         "Deep Learning",
         "PyTorch",
         "MLOps"
-      ],
-      "Product Manager": [
-        "User Research",
-        "Product Strategy",
-        "Roadmapping",
-        "Analytics",
-        "Stakeholder Management"
       ]
     };
 
-    const requiredSkills = roleSkills[goal] || [];
-    const missingSkills = requiredSkills.filter(
+    const required = roleSkills[goal] || [];
+    const missing = required.filter(
       s => !skills.toLowerCase().includes(s.toLowerCase())
     );
 
     result.innerHTML = `
-      <h2>Your Skill Map</h2>
+      <h2 style="margin-bottom:16px">Skill Gap Analysis</h2>
       <p><strong>Target Role:</strong> ${goal}</p>
 
-      <h3>Missing Skills</h3>
+      <h3 style="margin-top:24px">Missing Skills</h3>
       ${
-        missingSkills.length
-          ? `<ul>${missingSkills.map(s => `<li>${s}</li>`).join("")}</ul>`
-          : `<p>You already have the core skills 🎉</p>`
+        missing.length
+          ? `<ul>${missing.map(s => `<li>${s}</li>`).join("")}</ul>`
+          : `<p>You already match the role 🎯</p>`
       }
 
-      <h3>Learning Roadmap</h3>
+      <h3 style="margin-top:24px">Learning Roadmap</h3>
       <ol>
-        ${missingSkills.map(s => `<li>Learn ${s}</li>`).join("")}
+        ${missing.map(s => `<li>Learn ${s}</li>`).join("")}
       </ol>
     `;
 
-    result.scrollIntoView({ behavior: "smooth" });
+    console.log("Result rendered:", result.innerText.length);
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
