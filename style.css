@@ -1,42 +1,51 @@
 * {
   box-sizing: border-box;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family: 'Inter', sans-serif;
   background: #000;
   color: #fff;
 }
 
-.container {
+.hero {
   max-width: 900px;
   margin: 0 auto;
-  padding: 80px 20px;
+  padding: 80px 24px;
 }
 
-.headline {
-  font-size: 64px;
+h1 {
+  font-size: clamp(48px, 8vw, 96px);
   font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 20px;
+  letter-spacing: -2px;
+  line-height: 0.95;
 }
 
-.subtext {
+.subtitle {
+  margin-top: 24px;
+  max-width: 600px;
   font-size: 18px;
   color: #aaa;
-  margin-bottom: 40px;
+}
+
+.form {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 textarea,
 input {
   width: 100%;
   background: #111;
+  border: 1px solid #222;
   color: #fff;
-  border: 1px solid #333;
-  padding: 15px;
+  padding: 20px;
   font-size: 16px;
-  margin-bottom: 20px;
+  border-radius: 4px;
   outline: none;
 }
 
@@ -45,14 +54,20 @@ textarea {
   resize: vertical;
 }
 
+textarea:focus,
+input:focus {
+  border-color: #fff;
+}
+
 button {
-  width: 100%;
-  padding: 18px;
+  margin-top: 20px;
   background: #fff;
   color: #000;
-  font-size: 16px;
-  font-weight: 700;
   border: none;
+  padding: 18px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -62,23 +77,19 @@ button:hover {
 }
 
 .result {
-  margin-top: 50px;
-  background: #111;
-  padding: 30px;
-  border: 1px solid #333;
+  margin-top: 64px;
+  padding: 32px;
+  background: #0b0b0b;
+  border: 1px solid #222;
+  border-radius: 6px;
+  line-height: 1.6;
+}
+
+.result h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
 }
 
 .hidden {
   display: none;
-}
-
-.result h2 {
-  margin-top: 0;
-  font-size: 28px;
-}
-
-.result pre {
-  white-space: pre-wrap;
-  color: #ddd;
-  font-size: 15px;
 }
