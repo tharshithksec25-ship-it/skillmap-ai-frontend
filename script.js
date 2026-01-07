@@ -1,37 +1,42 @@
 // ================================
-// HARD BIND BUTTON ON PAGE LOAD
+// FORCE INTERCEPT BUTTON CLICK
 // ================================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+  "click",
+  function (e) {
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-  const button = document.querySelector("button");
-  const skillsInput = document.querySelector("textarea");
-  const goalInput = document.querySelector("input");
+    e.preventDefault();      // ⛔ STOP FORM SUBMIT
+    e.stopImmediatePropagation();
 
-  if (!button || !skillsInput || !goalInput) {
-    console.error("Required elements not found");
-    return;
-  }
-
-  button.addEventListener("click", generateSkillMap);
-});
+    generateSkillMap();
+  },
+  true // 🔥 CAPTURE PHASE (BEATS FORM SUBMIT)
+);
 
 // ================================
-// CORE FUNCTION (AI LOGIC)
+// CORE FUNCTION
 // ================================
 function generateSkillMap() {
 
   const skillsInput = document.querySelector("textarea");
   const goalInput = document.querySelector("input");
 
+  if (!skillsInput || !goalInput) {
+    alert("Inputs missing");
+    return;
+  }
+
   const skills = skillsInput.value.trim();
   const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Please enter skills and target role");
+    alert("Enter skills and target role");
     return;
   }
 
-  // ---------- RESULT CONTAINER ----------
+  // ---------------- RESULT CONTAINER ----------------
   let result = document.querySelector(".result");
 
   if (!result) {
@@ -42,14 +47,14 @@ function generateSkillMap() {
     button.insertAdjacentElement("afterend", result);
   }
 
-  // ---------- AI SKILL MAP ----------
+  // ---------------- AI LOGIC ----------------
   const roleSkills = {
     "AI Engineer": [
       "Python",
       "Machine Learning",
       "Deep Learning",
-      "Linear Algebra",
       "Statistics",
+      "Linear Algebra",
       "Projects",
       "Deployment"
     ],
@@ -62,7 +67,7 @@ function generateSkillMap() {
       "Hosting"
     ],
     "Product Manager": [
-      "Roadmapping",
+      "Product Thinking",
       "User Research",
       "Analytics",
       "Communication",
@@ -70,14 +75,18 @@ function generateSkillMap() {
     ]
   };
 
-  const userSkills = skills.toLowerCase().split(",").map(s => s.trim());
+  const userSkills = skills
+    .toLowerCase()
+    .split(/,|\n/)
+    .map(s => s.trim());
+
   const expected = roleSkills[goal] || roleSkills["AI Engineer"];
 
   const missing = expected.filter(
     skill => !userSkills.some(u => u.includes(skill.toLowerCase()))
   );
 
-  // ---------- RENDER ----------
+  // ---------------- RENDER ----------------
   result.innerHTML = `
     <h2>SkillMap AI</h2>
 
@@ -88,15 +97,15 @@ function generateSkillMap() {
       ${
         missing.length
           ? missing.map(m => `<li>${m}</li>`).join("")
-          : "<li>No major gaps found 🎯</li>"
+          : "<li>No major gaps 🎯</li>"
       }
     </ul>
 
     <h3>Learning Roadmap</h3>
     <ol>
-      <li>Learn fundamentals</li>
+      <li>Master fundamentals</li>
       <li>Build real-world projects</li>
-      <li>Apply & iterate</li>
+      <li>Apply, iterate, deploy</li>
     </ol>
   `;
 }
