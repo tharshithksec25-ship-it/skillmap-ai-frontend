@@ -1,17 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("button");
 
-  button.addEventListener("click", () => {
-    // Find inputs by placeholder (UI-safe)
-    const skillsBox = document.querySelector(
-      "textarea[placeholder*='skills'], textarea"
-    );
-    const goalBox = document.querySelector(
-      "input[placeholder*='Target'], input"
-    );
+  if (!button) {
+    console.error("Button not found");
+    return;
+  }
+
+  button.addEventListener("click", (e) => {
+    e.preventDefault(); // THIS IS THE KEY FIX
+
+    const skillsBox = document.querySelector("textarea");
+    const goalBox = document.querySelector("input");
 
     if (!skillsBox || !goalBox) {
-      alert("Inputs not found. UI structure changed.");
+      alert("Inputs not found");
       return;
     }
 
@@ -19,78 +21,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const goal = goalBox.value.trim();
 
     if (!skills || !goal) {
-      alert("Please enter your skills and target role.");
+      alert("Enter skills and target role");
       return;
     }
 
-    // Create result container if not present
     let result = document.querySelector(".result");
     if (!result) {
       result = document.createElement("div");
       result.className = "result";
       result.style.marginTop = "40px";
-      result.style.padding = "30px";
-      result.style.background = "#0f0f0f";
-      result.style.borderRadius = "12px";
-      result.style.color = "#fff";
       document.body.appendChild(result);
     }
 
-    // Mock AI intelligence (judge-safe)
-    const commonSkills = {
-      "AI Engineer": [
-        "Python",
-        "Linear Algebra",
-        "Machine Learning",
-        "Deep Learning",
-        "PyTorch / TensorFlow",
-        "MLOps",
-        "System Design"
-      ],
-      "Product Manager": [
-        "User Research",
-        "Roadmapping",
-        "Analytics",
-        "A/B Testing",
-        "Stakeholder Management"
-      ]
-    };
-
-    const required = commonSkills[goal] || [
-      "Foundational knowledge",
-      "Domain expertise",
-      "Projects",
-      "Problem solving"
-    ];
-
-    const userSkills = skills.toLowerCase();
-    const missing = required.filter(
-      s => !userSkills.includes(s.toLowerCase())
-    );
-
     result.innerHTML = `
-      <h2>Skill Gap Analysis</h2>
-      <p><strong>Target Role:</strong> ${goal}</p>
+      <h2>SkillMap AI Result</h2>
+      <p><strong>Target:</strong> ${goal}</p>
+      <p><strong>Your skills:</strong> ${skills}</p>
 
-      <h3>Existing Skills</h3>
-      <p>${skills}</p>
-
-      <h3>Missing Skills</h3>
+      <h3>Skill Gaps</h3>
       <ul>
-        ${missing.map(m => `<li>${m}</li>`).join("")}
+        <li>Advanced ${goal} concepts</li>
+        <li>Real-world projects</li>
+        <li>System design</li>
       </ul>
 
-      <h3>Personalized Learning Plan</h3>
+      <h3>Learning Plan</h3>
       <ol>
-        ${missing.map(
-          (m, i) =>
-            `<li>Week ${i + 1}: Learn ${m} + build mini project</li>`
-        ).join("")}
+        <li>Week 1–2: Foundations</li>
+        <li>Week 3–4: Projects</li>
+        <li>Week 5: Deployment</li>
       </ol>
-
-      <h3>Outcome</h3>
-      <p>You will be job-ready for <strong>${goal}</strong> in ~${missing.length +
-        4} weeks.</p>
     `;
   });
 });
