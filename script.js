@@ -46,6 +46,9 @@ function generateSkillMap() {
     const button = document.querySelector("button");
     button.insertAdjacentElement("afterend", result);
   }
+  result.style.color = "#ffffff";
+result.style.marginTop = "40px";
+
 
   // ---------------- AI LOGIC ----------------
   const roleSkills = {
@@ -109,3 +112,4 @@ function generateSkillMap() {
     </ol>
   `;
 }
+
