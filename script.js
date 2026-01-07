@@ -3,32 +3,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const skillsInput = document.querySelector("textarea");
   const goalInput = document.querySelector("input");
-  const button = document.querySelector("button");
+  const button = document.getElementById("generateBtn");
 
   if (!skillsInput || !goalInput || !button) {
-    console.error("Required elements not found");
+    console.error("Missing required DOM elements");
     return;
   }
 
   button.addEventListener("click", () => {
-    console.log("Button clicked");
+    console.log("Generate button clicked");
 
     const skills = skillsInput.value.trim();
     const goal = goalInput.value.trim();
 
     if (!skills || !goal) {
-      alert("Enter skills and target role");
+      alert("Please enter your skills and target role");
       return;
     }
 
-    let result = document.querySelector(".result");
+    let result = document.getElementById("result");
 
     if (!result) {
       result = document.createElement("div");
-      result.className = "result";
+      result.id = "result";
       result.style.marginTop = "40px";
-      result.style.color = "#fff";
-      button.after(result);
+      result.style.color = "#ffffff";
+      button.parentNode.appendChild(result);
     }
 
     const roleSkills = {
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Python",
         "Data Structures",
         "Linear Algebra",
+        "Probability",
         "Machine Learning",
         "Deep Learning",
         "PyTorch",
@@ -43,14 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
       "Product Manager": [
         "User Research",
+        "Product Strategy",
         "Roadmapping",
         "Analytics",
         "Stakeholder Management"
       ]
     };
 
-    const required = roleSkills[goal] || [];
-    const missing = required.filter(
+    const requiredSkills = roleSkills[goal] || [];
+    const missingSkills = requiredSkills.filter(
       s => !skills.toLowerCase().includes(s.toLowerCase())
     );
 
@@ -59,10 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
       <p><strong>Target Role:</strong> ${goal}</p>
 
       <h3>Missing Skills</h3>
-      <ul>${missing.map(m => `<li>${m}</li>`).join("")}</ul>
+      ${
+        missingSkills.length
+          ? `<ul>${missingSkills.map(s => `<li>${s}</li>`).join("")}</ul>`
+          : `<p>You already have the core skills 🎉</p>`
+      }
 
-      <h3>Roadmap</h3>
-      <ol>${missing.map(m => `<li>Learn ${m}</li>`).join("")}</ol>
+      <h3>Learning Roadmap</h3>
+      <ol>
+        ${missingSkills.map(s => `<li>Learn ${s}</li>`).join("")}
+      </ol>
     `;
 
     result.scrollIntoView({ behavior: "smooth" });
