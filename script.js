@@ -33,20 +33,20 @@ async function generateSkillMap() {
     });
 
     if (!response.ok) {
-      throw new Error("Backend returned error");
+      throw new Error("Backend error");
     }
 
     const data = await response.json();
 
     resultDiv.innerHTML = `
-      <h2>Your Skill Map</h2>
+      <h2>Your Personalized Skill Map</h2>
       <pre>${JSON.stringify(data, null, 2)}</pre>
     `;
   } catch (err) {
     console.error(err);
     resultDiv.innerHTML = `
       <h2>Error</h2>
-      <p>Backend unreachable or failed. Check API URL.</p>
+      <p>Backend unreachable. Check API URL.</p>
     `;
   }
 }
