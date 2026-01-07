@@ -1,56 +1,78 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector("button");
+// DO NOT TOUCH HTML OR CSS
 
-  if (!button) {
-    console.error("Button not found");
+window.generateSkillMap = function () {
+  const skillsBox = document.querySelector("textarea");
+  const goalBox = document.querySelector("input");
+
+  if (!skillsBox || !goalBox) {
+    alert("Input fields not found");
     return;
   }
 
-  button.addEventListener("click", (e) => {
-    e.preventDefault(); // THIS IS THE KEY FIX
+  const skills = skillsBox.value.trim();
+  const goal = goalBox.value.trim();
 
-    const skillsBox = document.querySelector("textarea");
-    const goalBox = document.querySelector("input");
+  if (!skills || !goal) {
+    alert("Please enter your skills and target role");
+    return;
+  }
 
-    if (!skillsBox || !goalBox) {
-      alert("Inputs not found");
-      return;
-    }
+  let result = document.querySelector(".result");
 
-    const skills = skillsBox.value.trim();
-    const goal = goalBox.value.trim();
-
-    if (!skills || !goal) {
-      alert("Enter skills and target role");
-      return;
-    }
-
-    let result = document.querySelector(".result");
-    if (!result) {
-      result = document.createElement("div");
-      result.className = "result";
-      result.style.marginTop = "40px";
+  if (!result) {
+    result = document.createElement("div");
+    result.className = "result";
+    result.style.marginTop = "48px";
+    document.querySelector("main")?.appendChild(result) ||
       document.body.appendChild(result);
-    }
+  }
 
-    result.innerHTML = `
-      <h2>SkillMap AI Result</h2>
-      <p><strong>Target:</strong> ${goal}</p>
-      <p><strong>Your skills:</strong> ${skills}</p>
+  // ---- AI LOGIC (LOCAL, DEMO-READY) ----
+  const requiredSkills = {
+    "AI Engineer": [
+      "Python",
+      "Machine Learning",
+      "Deep Learning",
+      "Model Deployment",
+      "Data Structures",
+      "System Design",
+    ],
+    "Product Manager": [
+      "Product Thinking",
+      "User Research",
+      "Roadmapping",
+      "Metrics",
+      "Communication",
+    ],
+  };
 
-      <h3>Skill Gaps</h3>
-      <ul>
-        <li>Advanced ${goal} concepts</li>
-        <li>Real-world projects</li>
-        <li>System design</li>
-      </ul>
+  const userSkills = skills.toLowerCase().split(",").map(s => s.trim());
+  const targetSkills = requiredSkills[goal] || [
+    "Core fundamentals",
+    "Projects",
+    "Industry tools",
+  ];
 
-      <h3>Learning Plan</h3>
-      <ol>
-        <li>Week 1–2: Foundations</li>
-        <li>Week 3–4: Projects</li>
-        <li>Week 5: Deployment</li>
-      </ol>
-    `;
-  });
-});
+  const missing = targetSkills.filter(
+    s => !userSkills.some(us => us.includes(s.toLowerCase()))
+  );
+
+  // ---- RENDER ----
+  result.innerHTML = `
+    <h2>SkillMap AI Result</h2>
+
+    <p><strong>Target Role:</strong> ${goal}</p>
+
+    <h3>Missing Skills</h3>
+    <ul>
+      ${missing.length ? missing.map(s => `<li>${s}</li>`).join("") : "<li>No major gaps 🎉</li>"}
+    </ul>
+
+    <h3>Learning Roadmap</h3>
+    <ol>
+      <li>Week 1–2: Learn fundamentals</li>
+      <li>Week 3–4: Build real projects</li>
+      <li>Week 5: Deploy & polish</li>
+    </ol>
+  `;
+};
