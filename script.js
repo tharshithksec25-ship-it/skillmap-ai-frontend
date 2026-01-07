@@ -1,78 +1,93 @@
-// DO NOT TOUCH HTML OR CSS
-
+// Make function GLOBAL so button onclick works
 window.generateSkillMap = function () {
-  const skillsBox = document.querySelector("textarea");
-  const goalBox = document.querySelector("input");
+  // 1️⃣ Get inputs SAFELY (based on placeholders you already have)
+  const skillsInput = document.querySelector(
+    'textarea[placeholder*="skills"]'
+  );
+  const goalInput = document.querySelector(
+    'input[placeholder*="Target"]'
+  );
 
-  if (!skillsBox || !goalBox) {
-    alert("Input fields not found");
+  if (!skillsInput || !goalInput) {
+    alert("Inputs not found. UI structure mismatch.");
     return;
   }
 
-  const skills = skillsBox.value.trim();
-  const goal = goalBox.value.trim();
+  const skills = skillsInput.value.trim();
+  const goal = goalInput.value.trim();
 
   if (!skills || !goal) {
-    alert("Please enter your skills and target role");
+    alert("Please enter skills and target role");
     return;
   }
 
-  let result = document.querySelector(".result");
+  // 2️⃣ Find OR create result container IN THE RIGHT PLACE
+  let resultBox = document.querySelector(".result");
 
-  if (!result) {
-    result = document.createElement("div");
-    result.className = "result";
-    result.style.marginTop = "48px";
-    document.querySelector("main")?.appendChild(result) ||
-      document.body.appendChild(result);
+  if (!resultBox) {
+    resultBox = document.createElement("div");
+    resultBox.className = "result";
+
+    // Insert AFTER the button (guaranteed visible)
+    const button = document.querySelector("button");
+    button.parentNode.insertBefore(resultBox, button.nextSibling);
   }
 
-  // ---- AI LOGIC (LOCAL, DEMO-READY) ----
-  const requiredSkills = {
+  // 3️⃣ AI LOGIC (offline-safe, demo-ready)
+  const roleSkills = {
     "AI Engineer": [
       "Python",
       "Machine Learning",
       "Deep Learning",
+      "Maths",
       "Model Deployment",
-      "Data Structures",
-      "System Design",
+      "Projects"
     ],
-    "Product Manager": [
-      "Product Thinking",
-      "User Research",
-      "Roadmapping",
-      "Metrics",
-      "Communication",
-    ],
+    "Web Developer": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React",
+      "APIs",
+      "Deployment"
+    ]
   };
 
-  const userSkills = skills.toLowerCase().split(",").map(s => s.trim());
-  const targetSkills = requiredSkills[goal] || [
-    "Core fundamentals",
+  const userSkills = skills
+    .toLowerCase()
+    .split(",")
+    .map(s => s.trim());
+
+  const expected = roleSkills[goal] || [
+    "Fundamentals",
     "Projects",
-    "Industry tools",
+    "Industry tools"
   ];
 
-  const missing = targetSkills.filter(
-    s => !userSkills.some(us => us.includes(s.toLowerCase()))
+  const missing = expected.filter(
+    s => !userSkills.some(u => u.includes(s.toLowerCase()))
   );
 
-  // ---- RENDER ----
-  result.innerHTML = `
-    <h2>SkillMap AI Result</h2>
+  // 4️⃣ Render (NO UI STYLING CHANGED)
+  resultBox.innerHTML = `
+    <h2>SkillMap AI Analysis</h2>
 
     <p><strong>Target Role:</strong> ${goal}</p>
 
     <h3>Missing Skills</h3>
     <ul>
-      ${missing.length ? missing.map(s => `<li>${s}</li>`).join("") : "<li>No major gaps 🎉</li>"}
+      ${
+        missing.length
+          ? missing.map(m => `<li>${m}</li>`).join("")
+          : "<li>No major gaps 🎯</li>"
+      }
     </ul>
 
-    <h3>Learning Roadmap</h3>
+    <h3>Roadmap</h3>
     <ol>
-      <li>Week 1–2: Learn fundamentals</li>
-      <li>Week 3–4: Build real projects</li>
-      <li>Week 5: Deploy & polish</li>
+      <li>Phase 1: Learn fundamentals</li>
+      <li>Phase 2: Build real projects</li>
+      <li>Phase 3: Deploy & optimize</li>
     </ol>
   `;
 };
